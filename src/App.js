@@ -1,84 +1,71 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   Text,
+  TextInput,
   View,
+  Button,  
   Platform,
   TouchableHighlight,
   Animated,
+  StyleSheet,
   Easing,
 } from 'react-native';
-import logo from './logo.png';
+
+import List from './List';
+var SampleArray = [] ;
 
 class App extends Component {
-  state = {
-    spinValue: new Animated.Value(0),
-  }
-
-  onClick = () => {
-    const wasRotated = this.state.spinValue._value === 1;
-    Animated.timing(
-      this.state.spinValue,
-      {
-        toValue: wasRotated ? 0 : 1,
-        duration: 250,
-        easing: Easing.linear
-      }
-    ).start()
-  }
-
+  state = {  
+   task:'',
+   taskamt:'',
+   names:[],
+   totalp:0,
+   totalv:0
+ }
+  changetotal=(e)=>this.setState({totalp:e.target.value}) 
+  changetext=(e)=>this.setState({task:e.target.value})
+  changetextamt=(e)=>this.setState({taskamt:e.target.value})
+  updateinfo=() =>{
+   var total=0;
+    total=this.state.totalv+parseInt(this.state.taskamt);
+    SampleArray.push({'name':this.state.task,'price':this.state.taskamt})   
+    this.setState({names:SampleArray,totalv:total})
+   
+  } 
   render() {
-    const spin = this.state.spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg']
-    });
-
     return (
-      <View style={styles.container}>
-        <Animated.Image source={logo} style={[styles.logo, { transform: [{rotate: spin}] }]}/>
-        <Text style={styles.title}>Create React Native Web App</Text>
-        <Text>Open up src/App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        {Platform.OS !== 'web' && <Text>Shake your phone to open the developer menu.</Text>}
-        <TouchableHighlight
-          onPress={this.onClick}
-          style={styles.button}
-          underlayColor={'#0A84D0'}
-        >
-          <Text style={styles.buttonText}>Rotate Logo</Text>
-        </TouchableHighlight>
+       <View style={{
+        flex: 1,
+        flexDirection: 'column'                           
+      }}>
+        <View style={{flexDirection: 'row',justifyContent:'center' }}>
+        <Text>Total person    </Text><TextInput  style={{height: 30}}   placeholder=""  onChange={this.changetotal}/>       
+        </View>
+       <View style={{flexDirection: 'row',justifyContent:'center'}}>
+       <TextInput  style={{height: 40}}   placeholder="Place task"  onChange={this.changetext}  /> 
+       <TextInput  style={{height: 40}}   placeholder="Place amt"  onChange={this.changetextamt}  /> 
+       <Button onPress={this.updateinfo}  style={styles.button} title="+"/>   
+     </View>
+       <View style={{flexDirection: 'row',justifyContent:'center'}}>       
+      <List names={this.state.names} total={this.state.totalv} totalp={this.state.totalp} />
       </View>
+       </View>
     );
-  }
+ }
+ 
 }
+const styles=StyleSheet.create({
+container:{
+  flex: 1,
+  backgroundColor: '#fff',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+button: {
+  height:30,
+  alignItems: 'center',
+  backgroundColor: '#2196F3'
+},
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: 300,
-    height: 300,
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  button: {
-    borderRadius: 3,
-    padding: 20,
-    marginVertical: 10,
-    marginTop: 10,
-    backgroundColor: '#1B95E0',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
 });
-
 export default App;
